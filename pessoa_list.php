@@ -28,6 +28,11 @@
         <tbody>
             <?php
             $conn = mysqli_connect('127.0.0.1', 'root', '', 'db_livro');
+            if (!empty($_GET['action']) and ($_GET['action'] === 'delete')) {
+                $id = (int) $_GET['id'];
+                $sql = "DELETE FROM tb_pessoa WHERE id = {$id}";
+                mysqli_query($conn, $sql);
+            }
             $sql = "SELECT
                         tb_pessoa.id,
                         tb_pessoa.nome,
@@ -52,8 +57,8 @@
                 $bairro = $row['bairro'];
                 $cidade = $row['cidade'];
                 print '<tr>';
-                print "<td class='table-danger'><a href='pessoa_delete.php?id={$id}'><img src='images/del.svg'></a></td>";
-                print "<td class='table-warning'><a href='pessoa_form_edit.php?id={$id}'><img src='images/edit.svg'></a></td>";
+                print "<td class='table-danger'><a href='pessoa_list.php?action=delete&id={$id}'><img src='images/del.svg'></a></td>";
+                print "<td class='table-warning'><a href='pessoa_form.php?action=edit&id={$id}'><img src='images/edit.svg'></a></td>";
                 print "<td>{$id}</td>";
                 print "<td>{$nome}</td>";
                 print "<td>{$email}</td>";
@@ -67,6 +72,10 @@
             ?>
         </tbody>
     </table>
+    <button class="btn btn-light" onclick="window.location.href='pessoa_form.php'">
+        <img class="me-2" src="images/add.svg">
+        Inserir
+    </button>
 </body>
 
 </html>
