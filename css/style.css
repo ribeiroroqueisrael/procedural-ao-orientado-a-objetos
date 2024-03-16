@@ -1,0 +1,11 @@
+.c-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 2rem;
+    padding-top: 2rem;
+}
+
+.c-form__group {
+    grid-column: 1 / -1;
+    justify-self: start;
+}
