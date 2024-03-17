@@ -1,4 +1,6 @@
 <?php
+require_once 'db/pessoa_db.php';
+
 $pessoa = [
     'id' => '',
     'nome' => '',
@@ -9,37 +11,19 @@ $pessoa = [
     'fk_id_cidade' => '',
 ];
 if (!empty($_GET['action'])) {
-    $conn = mysqli_connect('127.0.0.1', 'root', '', 'db_livro');
 
     if ($_GET['action'] === 'edit') {
 
         if (!empty($_GET['id'])) {
             $id = (int) $_GET['id'];
-            $sql = "SELECT * FROM tb_pessoa WHERE id = {$id}";
-            $result = mysqli_query($conn, $sql);
-            $pessoa = mysqli_fetch_assoc($result);
+            $pessoa = get_pessoa($id);
         }
-        mysqli_close($conn);
     } else if ($_GET['action'] === 'save') {
         $pessoa = $_POST;
         if (empty($pessoa['id'])) {
-            $sql = "INSERT INTO tb_pessoa SET nome = '{$pessoa['nome']}',
-                                  email = '{$pessoa['email']}',
-                                  telefone = '{$pessoa['telefone']}',
-                                  endereco = '{$pessoa['endereco']}',
-                                  bairro = '{$pessoa['bairro']}',
-                                  fk_id_cidade = '{$pessoa['fk_id_cidade']}'";
-            $result = mysqli_query($conn, $sql);
+            $result = insert_pessoa($pessoa);
         } else {
-            $sql = "UPDATE tb_pessoa
-                    SET nome = '{$pessoa['nome']}',
-                        email = '{$pessoa['email']}',
-                        telefone = '{$pessoa['telefone']}',
-                        endereco = '{$pessoa['endereco']}',
-                        bairro = '{$pessoa['bairro']}',
-                        fk_id_cidade = '{$pessoa['fk_id_cidade']}'
-                    WHERE id = {$pessoa['id']}";
-            $result = mysqli_query($conn, $sql);
+            $result = update_pessoa($pessoa);
         }
         print $result ? 'Registro salvo com sucesso!' : '';
     }
