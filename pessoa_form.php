@@ -1,5 +1,6 @@
 <?php
-require_once 'db/pessoa_db.php';
+require_once 'classes/Pessoa.php';
+require_once 'classes/Cidade.php';
 
 $pessoa = [
     'id' => '',
@@ -12,25 +13,27 @@ $pessoa = [
 ];
 if (!empty($_GET['action'])) {
 
-    if ($_GET['action'] === 'edit') {
+    try {
+        if ($_GET['action'] === 'edit') {
 
-        if (!empty($_GET['id'])) {
-            $id = (int) $_GET['id'];
-            $pessoa = get_pessoa($id);
+            if (!empty($_GET['id'])) {
+                $id = (int) $_GET['id'];
+                $pessoa = Pessoa::findById($id);
+            }
+        } else if ($_GET['action'] === 'save') {
+            Pessoa::save($_POST);
+            print 'Registro salvo com sucesso!';
         }
-    } else if ($_GET['action'] === 'save') {
-        $pessoa = $_POST;
-        if (empty($pessoa['id'])) {
-            $result = insert_pessoa($pessoa);
-        } else {
-            $result = update_pessoa($pessoa);
-        }
-        print $result ? 'Registro salvo com sucesso!' : '';
+    } catch (Exception $e) {
+        print $e->getMessage();
     }
 }
 
-require_once 'lista_cidades.php';
-$cidades = lista_cidades($pessoa['fk_id_cidade']);
+$cidades = '';
+foreach (Cidade::listAll() as $cidade) {
+    $selected = $cidade['id'] === $pessoa['fk_id_cidade'] ? 'selected' : '';
+    $cidades .= "<option value='{$cidade['id']}' {$selected}>{$cidade['nome']}</option>";
+}
 
 $form = file_get_contents('html/form.html');
 $form = str_replace('{id}', $pessoa['id'], $form);
