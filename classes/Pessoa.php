@@ -34,10 +34,10 @@ class Pessoa
         return $result->fetch();
     }
 
-    public static function delete(string $id): PDOStatement
+    public static function delete($id)
     {
         $conn = self::getConnection();
-        $result = $conn->query("DELETE FROM tb_pessoa WHERE id = :id");
+        $result = $conn->prepare("DELETE FROM tb_pessoa WHERE id = :id");
         $result->execute(['id' => $id]);
         return $result;
     }
